@@ -8,16 +8,14 @@ var Art = function(canvas, config) {
     this.width = canvas.width;
     this.height = canvas.height;
 
-    if (config) {
-        this.radius = config.radius || 200;
-        this.amplitude = config.amplitude || 100;
-        this.cx = config.x || this.width/2;
-        this.cy = config.y || this.height/2;
-        this.changeSpeed = config.changeSpeed || 0.0001;
-        this.rotation = config.rotation || 0.0004;
-        this.furr = config.furr || false;
-        this.complexity = config.complexity || 5;
-    }
+    this.radius = config.radius || 200;
+    this.amplitude = config.amplitude || 100;
+    this.cx = config.x || -this.width/2;
+    this.cy = config.y || this.height/2;
+    this.changeSpeed = config.changeSpeed || 0.0001;
+    this.rotation = config.rotation || 0.0004;
+    this.furr = config.furr || false;
+    this.complexity = config.complexity || 5;
 
     this.points = this.createLine(this.complexity);
 
