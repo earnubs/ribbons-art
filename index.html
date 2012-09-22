@@ -11,13 +11,19 @@ html,body { background:black }
 <script src=ribbon.js></script>
 
 <script>
+(function() {
+  window.requestAnimationFrame = requestAnimationFrame = window.requestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.msRequestAnimationFrame;
+})();
 
 var canvas = document.querySelector('canvas');
 
 var conf = {
-  radius: 30,
+  radius: 50,
   amplitude: 50,
-  changeSpeed: 0.001,
+  ROC: 0.001,
   rotation: 0.004,
   furr: false,
   x: -100,
@@ -26,11 +32,26 @@ var conf = {
 };
 
 whoosh = new Art(canvas, conf);
+
 whoosh.render();
 
 var gui = new dat.GUI();
-gui.add(conf, 'complexity', 1,8).step(1);
 
+var controllers = [
+ // gui.add(whoosh, 'complexity', 1,8).step(1),
+  gui.add(whoosh, 'ROC', 0.001,0.01),
+  gui.add(whoosh, 'furr'),
+  gui.add(whoosh, 'cx', -800, 100),
+  gui.add(whoosh, 'cy', 0, 400)
+]
 
+controllers.forEach(addEars);
+
+function addEars(el, i, arr) {
+  console.log(el);
+  el.onFinishChange(function(value) {
+    whoosh.render();
+  });
+}
 
 </script>
