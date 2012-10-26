@@ -3,12 +3,13 @@
 <title>Ribbon</title>
 
 <style>
-html,body { background:black }
+html,body { background:rgb(20,20,20);
+}
 </style>
 
 <canvas width=1200 height=800></canvas>
 <script src=dat-gui/build/dat.gui.min.js></script>
-<script src=ribbon.js></script>
+<script src=ribbon-min.js></script>
 
 <script>
 (function() {
@@ -18,37 +19,68 @@ html,body { background:black }
     window.msRequestAnimationFrame;
 })();
 
+var JSON = {
+  "preset": "Foo",
+  "remembered": {
+    "Default": {
+      "0": {
+        "message": "default",
+        "radius": 20,
+        "amplitude": 0.01,
+        "ROC": 0.004,
+        "complexity": 8,
+        "pinch": 1000
+      }
+    },
+    "Foo": {
+      "0": {
+        "message": "Foo",
+        "radius": 10,
+        "amplitude": 0.01,
+        "ROC": 0.004,
+        "pinch": 10,
+        "complexity": 3
+      }
+    }
+  },
+  "closed": false,
+  "folders": {}
+};
+
 var canvas = document.querySelector('canvas');
 
 var conf = {
-  radius: 50,
-  amplitude: 50,
-  ROC: 0.001,
+  radius: 20,
+  amplitude: 0.01,
+  ROC: 0.004,
   rotation: 0.004,
   furr: false,
-  x: -100,
-  y: 200,
-  complexity: 3
+  complexity: 5
 };
 
 whoosh = new Art(canvas, conf);
-
 whoosh.render();
 
-var gui = new dat.GUI();
+var gui = new dat.GUI({
+  load: JSON
+});
+
+gui.remember(whoosh);
+
 
 var controllers = [
- // gui.add(whoosh, 'complexity', 1,8).step(1),
   gui.add(whoosh, 'ROC', 0.001,0.01),
-  gui.add(whoosh, 'furr'),
-  gui.add(whoosh, 'cx', -800, 100),
-  gui.add(whoosh, 'cy', 0, 400)
-]
+  gui.add(whoosh, 'amplitude', 0, 50),
+  gui.add(whoosh, 'radius', 0, 100),
+  gui.add(whoosh, 'pinch', 1, 5000)
+  //gui.addColor(whoosh, 'color0'),
+  //gui.addColor(whoosh, 'color1')
+];
+
 
 controllers.forEach(addEars);
 
 function addEars(el, i, arr) {
-  console.log(el);
   el.onFinishChange(function(value) {
     whoosh.render();
   });

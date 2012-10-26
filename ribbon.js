@@ -1,6 +1,6 @@
 var Art = function(canvas, config) {
 
-    this.cache = config;
+    this.cache = config || {};
 
     this.width = canvas.width;
     this.height = canvas.height;
@@ -24,12 +24,14 @@ var Art = function(canvas, config) {
     this.drawCount = 0;
     this.param = 0;
     this.rotPhase = 0;
+    this.repeats = 1;
+    this.pinch = 1000;
 
     this.ctx = canvas.getContext('2d');
 
     var grad = this.ctx.createRadialGradient(0,0,0,0,0,this.radius+50);
-    grad.addColorStop(0,"rgba(0,0,255,0.1)");
-    grad.addColorStop(1,"rgba(200,0,100,0.1)");
+    grad.addColorStop(0,"rgba(200,0,0,0.1)");
+    grad.addColorStop(1,"rgba(0,0,255,0.1)");
 
     this.ctx.strokeStyle = grad;
 
@@ -39,6 +41,7 @@ var Art = function(canvas, config) {
 };
 
 Art.prototype = {
+    // todo move stuff to vars
     render: function() {
         if (!this.drawCount) {
             this.ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -49,12 +52,12 @@ Art.prototype = {
         x0, y0,
         points = this.points;
 
-        for (j = 0; j < 4; j++) {
+        for (j = 0; j < this.repeats; j++) {
             this.drawCount++;
 
 
             this.param += this.ROC;
-            this.cx += 2; // TODO add RTL option
+            this.cx += 1; // TODO add RTL option
             this.cy += 0.004;
             this.rotPhase += this.rotation;
 
@@ -79,11 +82,11 @@ Art.prototype = {
 
                     if (this.furr) {
                         rad = (y + easeFactor * ( yn - y )) *
-                            (this.radius * Math.sin(this.drawCount/100 * Math.random()));
+                            (this.radius * Math.sin(this.drawCount/this.pinch ));
                     } else {
                         rad = (y + easeFactor * ( yn - y )) *
                             // pinches the curve
-                            ((this.radius + (this.rotPhase * this.radius)) * Math.sin(this.drawCount/1000)); // TODO param the 100 TODO double radius TODO this.PINCH
+                            ((this.radius + (this.rotPhase * this.radius)) * Math.sin(this.drawCount/this.pinch)); 
                     }
 
                     x0 = this.radius + rad * Math.cos(theta);
@@ -95,9 +98,9 @@ Art.prototype = {
             this.ctx.closePath();
             this.ctx.stroke();
         }
-        if (this.cx > this.width + this.radius || this.drawCount > 500) {
-            this.cx = 0 ;
-            this.cy = 200; 
+        if (this.cx > (this.width + (10 * this.radius)) ) {
+            this.cx = -this.width/2;
+            this.cy = this.height/2; 
             this.drawCount = 0;
             this.rotPhase = 0;
             this.param = 0;
