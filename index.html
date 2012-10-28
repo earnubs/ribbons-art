@@ -12,34 +12,24 @@ html,body { background:rgb(20,20,20);
 <script src=ribbon-min.js></script>
 
 <script>
+
 (function() {
-  window.requestAnimationFrame = requestAnimationFrame = window.requestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.msRequestAnimationFrame;
+  var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+    window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+  window.requestAnimationFrame = requestAnimationFrame;
 })();
 
-var JSON = {
-  "preset": "Foo",
+var config = {
+  "preset": "Nebula",
   "remembered": {
-    "Default": {
+    "Nebula": {
       "0": {
-        "message": "default",
-        "radius": 20,
-        "amplitude": 0.01,
-        "ROC": 0.004,
-        "complexity": 8,
-        "pinch": 1000
-      }
-    },
-    "Foo": {
-      "0": {
-        "message": "Foo",
-        "radius": 10,
-        "amplitude": 0.01,
-        "ROC": 0.004,
-        "pinch": 10,
-        "complexity": 3
+        "ROC": 0.001,
+        "AMPLITUDE": 0.01,
+        "RADIUS": 70,
+        "GRAD_RADIUS0": 5,
+        "GRAD_RADIUS1": 200,
+        "PINCH": 326
       }
     }
   },
@@ -49,41 +39,32 @@ var JSON = {
 
 var canvas = document.querySelector('canvas');
 
-var conf = {
-  radius: 20,
-  amplitude: 0.01,
-  ROC: 0.004,
-  rotation: 0.004,
-  furr: false,
-  complexity: 5
-};
-
-whoosh = new Art(canvas, conf);
-whoosh.render();
+whoosh = new Art(canvas);
 
 var gui = new dat.GUI({
-  load: JSON
+  load: config
 });
 
-gui.remember(whoosh);
-
-
 var controllers = [
-  gui.add(whoosh, 'ROC', 0.001,0.01),
-  gui.add(whoosh, 'amplitude', 0, 50),
-  gui.add(whoosh, 'radius', 0, 100),
-  gui.add(whoosh, 'pinch', 1, 5000)
+  gui.add(whoosh, 'ROC', 0.0001,0.001),
+  gui.add(whoosh, 'AMPLITUDE', 0, 100),
+  gui.add(whoosh, 'RADIUS', 0, 500),
+  gui.add(whoosh, 'GRAD_RADIUS0', 0, 500),
+  gui.add(whoosh, 'GRAD_RADIUS1', 0, 500),
+  gui.add(whoosh, 'PINCH', 1, 5000),
+  gui.add(whoosh, 'ROTATION', 0.0001, 0.001)
   //gui.addColor(whoosh, 'color0'),
   //gui.addColor(whoosh, 'color1')
 ];
-
 
 controllers.forEach(addEars);
 
 function addEars(el, i, arr) {
   el.onFinishChange(function(value) {
-    whoosh.render();
+    whoosh.init(true, -800);
   });
 }
+
+//whoosh.render(-800);
 
 </script>
